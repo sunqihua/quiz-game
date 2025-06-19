@@ -874,15 +874,15 @@
         // 更新UI
         function updateUI() {
             scoreDisplay.textContent = `得分: ${score}`;
-            healthBar.style.width = `${(health/10)}%`; // 因为血量是3000，所以除以10
+            healthBar.style.width = `${(health/30)}%`; // 因为血量是3000，所以除以30
             totalHitsDisplay.textContent = totalHits;
             maxComboDisplay.textContent = maxCombo;
             totalDamageDisplay.textContent = totalDamage;
             
             // 根据血量改变血条颜色
-            if (health > 700) {
+            if (health > 2000) {
                 healthBar.style.background = 'linear-gradient(to right, #06d6a0, #4cc9f0)';
-            } else if (health > 300) {
+            } else if (health > 1000) {
                 healthBar.style.background = 'linear-gradient(to right, #ffd166, #ff9e00)';
             } else {
                 healthBar.style.background = 'linear-gradient(to right, #ef476f, #ff6b6b)';
@@ -890,16 +890,16 @@
             
             // 根据血量改变领导表情
             let mouthPath = "";
-            if (health > 700) {
+            if (health > 2000) {
                 // 微笑
                 mouthPath = "M80 100 Q100 110 120 100";
-            } else if (health > 500) {
+            } else if (health > 1000) {
                 // 平嘴
                 mouthPath = "M80 100 L120 100";
-            } else if (health > 300) {
+            } else if (health > 500) {
                 // 不高兴
                 mouthPath = "M80 100 Q100 90 120 100";
-            } else if (health > 100) {
+            } else if (health > 300) {
                 // 惊讶
                 mouthPath = "M90 100 Q100 120 110 100";
             } else {
