@@ -1,986 +1,376 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>职场健康度测试 | Workplace Wellness Test</title>
+    <title>清新测试导航</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
-
+        
         body {
-            background: linear-gradient(135deg, #e0f7fa 0%, #f5f5f5 100%);
-            color: #4a4a4a;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
             min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 300px;
-            background: linear-gradient(120deg, #a8edea 0%, #5ab9ea 100%);
-            z-index: -1;
-            border-radius: 0 0 50% 50%/0 0 30% 30%;
-            transform: scale(1.5);
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: rgba(255, 255, 255, 0.92);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            position: relative;
-            padding: 40px;
-        }
-
-        /* 语言切换按钮 */
-        .language-switcher {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             display: flex;
-            gap: 10px;
-            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
         }
-
-        .lang-btn {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid #5ab9ea;
-            color: #2c3e50;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-
-        .lang-btn:hover {
-            background: #5ab9ea;
-            color: white;
-        }
-
-        .lang-btn.active {
-            background: #5ab9ea;
-            color: white;
-            box-shadow: 0 3px 10px rgba(90, 185, 234, 0.3);
-        }
-
-        header {
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
             text-align: center;
-            padding: 30px 20px;
-            position: relative;
         }
-
+        
+        header {
+            margin-bottom: 50px;
+            animation: fadeIn 1s ease;
+        }
+        
         h1 {
-            color: #2c3e50;
-            font-size: 2.5rem;
+            font-size: 3.2rem;
             margin-bottom: 15px;
-            font-weight: 600;
+            color: #2c3e50;
+            font-weight: 300;
+            letter-spacing: 1px;
         }
-
+        
         .subtitle {
-            color: #5ab9ea;
             font-size: 1.2rem;
+            color: #7f8c8d;
             max-width: 600px;
-            margin: 0 auto 30px;
+            margin: 0 auto;
+            line-height: 1.6;
             font-weight: 300;
         }
-
-        .intro-box {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px;
-            padding: 25px;
-            margin: 30px 0;
-            border-left: 5px solid #5ab9ea;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
-        }
-
-        .intro-box p {
-            margin-bottom: 15px;
-            font-size: 1.05rem;
-        }
-
-        .intro-box i {
-            color: #5ab9ea;
-            margin-right: 10px;
-            font-size: 1.3rem;
-        }
-
-        .test-container {
-            display: none;
-        }
-
-        .question {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 25px 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e9ecef;
-            transition: transform 0.3s ease;
-        }
-
-        .question:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .question h3 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.25rem;
+        
+        .cards {
             display: flex;
-            align-items: center;
-        }
-
-        .question-number {
-            display: inline-block;
-            background: #5ab9ea;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 32px;
-            margin-right: 15px;
-            font-size: 0.9rem;
-        }
-
-        .options {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-
-        @media (max-width: 768px) {
-            .options {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .option {
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            font-weight: 500;
-        }
-
-        .option:hover {
-            background: #e9ecef;
-            transform: translateY(-2px);
-        }
-
-        .option.selected {
-            background: #5ab9ea;
-            color: white;
-            border-color: #4aa8d8;
-            box-shadow: 0 5px 15px rgba(90, 185, 234, 0.3);
-        }
-
-        .option.selected:nth-child(2) {
-            background: #84d3f0;
-        }
-
-        .option.selected:nth-child(3) {
-            background: #4aa8d8;
-        }
-
-        .option.selected:nth-child(4) {
-            background: #2a8cbf;
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin: 30px 0;
-        }
-
-        button {
-            background: #5ab9ea;
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(90, 185, 234, 0.3);
+            gap: 30px;
+            margin-top: 20px;
         }
-
-        button:hover {
-            background: #4aa8d8;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(90, 185, 234, 0.4);
-        }
-
-        button:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        #prevBtn {
-            background: #a8edea;
-            color: #2c3e50;
-        }
-
-        #prevBtn:hover {
-            background: #92e0dd;
-        }
-
-        .progress-container {
-            margin: 30px 0;
-            background: #e9ecef;
-            border-radius: 50px;
-            height: 12px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #a8edea 0%, #5ab9ea 100%);
-            border-radius: 50px;
-            transition: width 0.5s ease;
-        }
-
-        .progress-text {
-            text-align: center;
-            margin-top: 10px;
-            color: #5ab9ea;
-            font-weight: 500;
-        }
-
-        .result-container {
-            display: none;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .result-card {
+        
+        .card {
             background: white;
-            border-radius: 20px;
-            padding: 40px;
-            margin: 30px auto;
-            max-width: 600px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.03);
             position: relative;
             overflow: hidden;
         }
-
-        .result-card::before {
-            content: "";
+        
+        .card::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 8px;
-            background: linear-gradient(90deg, #a8edea 0%, #5ab9ea 100%);
-        }
-
-        .result-title {
-            font-size: 2rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        .result-score {
-            font-size: 4rem;
-            font-weight: 700;
-            color: #5ab9ea;
-            margin: 30px 0;
-            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .result-message {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 30px;
-            color: #4a4a4a;
-        }
-
-        .result-details {
-            text-align: left;
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 30px;
-        }
-
-        .result-details h3 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 1.4rem;
-        }
-
-        .result-details ul {
-            padding-left: 25px;
-        }
-
-        .result-details li {
-            margin-bottom: 15px;
-            font-size: 1.05rem;
-        }
-
-        .restart-btn {
-            background: #84d3f0;
-            margin: 20px auto;
-            display: block;
-        }
-
-        .decoration {
-            position: absolute;
-            z-index: -1;
-            opacity: 0.1;
-        }
-
-        .decoration.circle {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: #5ab9ea;
-            top: 50px;
-            right: 100px;
-        }
-
-        .decoration.triangle {
-            width: 0;
-            height: 0;
-            border-left: 100px solid transparent;
-            border-right: 100px solid transparent;
-            border-bottom: 180px solid #a8edea;
-            bottom: 100px;
-            left: 50px;
-            transform: rotate(45deg);
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px 0;
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        .leaf {
-            position: absolute;
-            font-size: 2rem;
-            color: #84d3f0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #64b3f4, #43cea2);
             opacity: 0.7;
-            z-index: -1;
-            animation: float 15s infinite ease-in-out;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
         }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-20px) rotate(5deg);
-            }
+        
+        .card:hover::before {
+            transform: scaleX(1);
         }
-
-        /* 分数说明样式 */
-        .score-explanation {
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+        
+        .icon-container {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
             display: flex;
+            align-items: center;
             justify-content: center;
-            margin: 20px 0;
-            gap: 10px;
-            flex-wrap: wrap;
+            margin: 0 auto 25px;
+            transition: all 0.4s ease;
         }
-
-        .score-level {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+        
+        .card-1 .icon-container {
+            background: rgba(100, 179, 244, 0.15);
+            border: 1px solid rgba(100, 179, 244, 0.2);
+        }
+        
+        .card-2 .icon-container {
+            background: rgba(67, 206, 162, 0.15);
+            border: 1px solid rgba(67, 206, 162, 0.2);
+        }
+        
+        .card:hover .icon-container {
+            transform: scale(1.08);
+        }
+        
+        .icon {
+            font-size: 48px;
+            color: #2c3e50;
+        }
+        
+        .card-1 .icon {
+            color: #64b3f4;
+        }
+        
+        .card-2 .icon {
+            color: #43cea2;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
             font-weight: 500;
         }
-
-        .score-level.healthy {
-            background: rgba(90, 185, 234, 0.2);
-            color: #2a8cbf;
+        
+        .description {
+            font-size: 1.05rem;
+            margin-bottom: 28px;
+            line-height: 1.7;
+            color: #7f8c8d;
+            font-weight: 300;
+            padding: 0 10px;
         }
-
-        .score-level.warning {
-            background: rgba(255, 179, 71, 0.2);
-            color: #cc8500;
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 38px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.5px;
         }
-
-        .score-level.risk {
-            background: rgba(255, 105, 97, 0.2);
-            color: #c23b22;
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
         }
-
-        .score-level.crisis {
-            background: rgba(217, 83, 79, 0.2);
-            color: #a52a2a;
+        
+        .btn:hover::after {
+            transform: translateX(0);
+        }
+        
+        .btn-1 {
+            background: #64b3f4;
+            color: white;
+            box-shadow: 0 5px 15px rgba(100, 179, 244, 0.3);
+        }
+        
+        .btn-2 {
+            background: #43cea2;
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 206, 162, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        footer {
+            margin-top: 60px;
+            font-size: 0.95rem;
+            color: #95a5a6;
+            animation: fadeIn 2s ease;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* Decorative elements */
+        .deco-circle {
+            position: absolute;
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.08;
+        }
+        
+        .circle-1 {
+            width: 200px;
+            height: 200px;
+            background: #64b3f4;
+            top: 10%;
+            left: 10%;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .circle-2 {
+            width: 150px;
+            height: 150px;
+            background: #43cea2;
+            bottom: 15%;
+            right: 15%;
+            animation: float 10s ease-in-out infinite;
+            animation-delay: 0.5s;
+        }
+        
+        .circle-3 {
+            width: 100px;
+            height: 100px;
+            background: #ff9a9e;
+            top: 20%;
+            right: 20%;
+            animation: float 7s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.6rem;
+            }
+            
+            .icon-container {
+                width: 85px;
+                height: 85px;
+            }
+            
+            .icon {
+                font-size: 40px;
+            }
         }
     </style>
 </head>
-
 <body>
-    <div class="decoration circle"></div>
-    <div class="decoration triangle"></div>
-
-    <div class="leaf" style="top: 10%; left: 5%;">🍃</div>
-    <div class="leaf" style="top: 15%; right: 8%;">🌿</div>
-    <div class="leaf" style="bottom: 20%; left: 10%;">🍀</div>
-    <div class="leaf" style="bottom: 15%; right: 5%;">🌱</div>
-
+    <!-- Decorative background elements -->
+    <div class="deco-circle circle-1"></div>
+    <div class="deco-circle circle-2"></div>
+    <div class="deco-circle circle-3"></div>
+    
     <div class="container">
-        <!-- 语言切换按钮 -->
-        <div class="language-switcher">
-            <button class="lang-btn active" data-lang="zh">中文</button>
-            <button class="lang-btn" data-lang="en">English</button>
-        </div>
-
         <header>
-            <h1 id="title">职场心灵晴雨表</h1>
-            <p class="subtitle" id="subtitle">30道题科学评估您的工作环境健康度</p>
+            <h1>心理测试导航</h1>
+            <p class="subtitle">选择您感兴趣的测试，探索自己的心理状态</p>
         </header>
-
-        <div class="intro-box" id="introSection">
-            <p><i class="fas fa-heart"></i> <span id="intro1">本测试从生理状态、情绪感受、工作意义和职场关系四个维度评估工作对您的影响</span></p>
-            <p><i class="fas fa-clock"></i> <span id="intro2">测试耗时约5-8分钟，请根据最近1个月的真实感受作答</span></p>
-            <p><i class="fas fa-lock"></i> <span id="intro3">所有数据仅保存在您的设备中，测试结束后不会上传任何信息</span></p>
-            <button id="startBtn">
-                <i class="fas fa-play"></i> <span id="startBtnText">开始测试</span>
-            </button>
-        </div>
-
-        <div class="test-container" id="testSection">
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-            <p class="progress-text" id="progressText">问题 1/30</p>
-
-            <div id="questionsContainer">
-                <!-- 问题将通过JS动态生成 -->
-            </div>
-
-            <div class="nav-buttons">
-                <button id="prevBtn" disabled>
-                    <i class="fas fa-arrow-left"></i> <span id="prevBtnText">上一题</span>
-                </button>
-                <button id="nextBtn">
-                    <span id="nextBtnText">下一题</span> <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="result-container" id="resultSection">
-            <h2 class="result-title" id="resultTitle">您的职场健康度报告</h2>
-            <div class="result-card">
-                <div class="result-score" id="finalScore">0</div>
-                <h3 id="resultLevel">健康状态</h3>
-                <p class="result-message" id="resultMessage">正在分析您的结果...</p>
-
-                <div class="score-explanation">
-                    <div class="score-level healthy" id="scoreLevel1">0-30: 健康区</div>
-                    <div class="score-level warning" id="scoreLevel2">31-50: 警示区</div>
-                    <div class="score-level risk" id="scoreLevel3">51-70: 风险区</div>
-                    <div class="score-level crisis" id="scoreLevel4">71-90: 危机区</div>
+        
+        <div class="cards">
+            <div class="card card-1">
+                <div class="icon-container">
+                    <i class="fas fa-briefcase icon"></i>
                 </div>
-
-                <div class="result-details">
-                    <h3 id="recommendTitle">专业建议</h3>
-                    <ul id="recommendations">
-                        <!-- 建议内容将通过JS动态生成 -->
-                    </ul>
+                <h2>职场压力测试</h2>
+                <p class="description">评估您当前的工作压力水平，了解压力来源，并获得个性化的减压建议，帮助您更好地管理工作压力。</p>
+                <a href="workpressure.html" class="btn btn-1">开始测试</a>
+            </div>
+            
+            <div class="card card-2">
+                <div class="icon-container">
+                    <i class="fas fa-fist-raised icon"></i>
                 </div>
-
-                <button class="restart-btn" id="restartBtn">
-                    <i class="fas fa-redo"></i> <span id="restartBtnText">重新测试</span>
-                </button>
+                <h2>暴打领导解压</h2>
+                <p class="description">一个创意解压小游戏，释放工作压力，调整情绪状态（仅供娱乐）。轻点鼠标，释放压力！</p>
+                <a href="angry.html" class="btn btn-2">立即体验</a>
             </div>
         </div>
+        
+        <footer>
+            <p>© 2023 清新测试导航 | 所有测试结果仅供参考</p>
+        </footer>
     </div>
-
-    <footer>
-        <p id="footerText1">职场健康度测试 | 本测试仅供参考，不能替代专业医疗建议</p>
-        <p id="footerText2">遇到严重困扰时，请寻求专业心理咨询师帮助</p>
-    </footer>
-
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // 语言包
-            const translations = {
-                zh: {
-                    title: "职场心灵晴雨表",
-                    subtitle: "30道题科学评估您的工作环境健康度",
-                    intro1: "本测试从生理状态、情绪感受、工作意义和职场关系四个维度评估工作对您的影响",
-                    intro2: "测试耗时约5-8分钟，请根据最近1个月的真实感受作答",
-                    intro3: "所有数据仅保存在您的设备中，测试结束后不会上传任何信息",
-                    startBtnText: "开始测试",
-                    prevBtnText: "上一题",
-                    nextBtnText: "下一题",
-                    questions: [
-                        "早晨想到上班就感到胃痛/头痛/心悸",
-                        "工作时出现呼吸困难或浑身紧绷感",
-                        "下班后精疲力竭，连日常活动都感到困难",
-                        "因工作压力导致失眠（难以入睡/半夜惊醒）",
-                        "控制不住对同事/客户/家人发脾气",
-                        "觉得工作内容完全无意义，像在浪费时间",
-                        "接到新任务时第一反应是厌恶或绝望",
-                        "怀疑自己能力下降（连简单任务都做不好）",
-                        "刻意拖延工作直到截止前才动手",
-                        "听到工作消息提示音就感到焦虑",
-                        "需要小心翼翼揣测领导/同事的潜台词",
-                        "被否定/贬低时却不敢反驳",
-                        "休息时间常被工作消息/电话打扰",
-                        "请假时会产生强烈的愧疚感",
-                        "办公室氛围压抑，无人敢说真话",
-                        "工资无法覆盖工作带来的情绪治疗费用",
-                        "想到未来五年还要做这份工作就感到窒息",
-                        "没有时间精力发展任何技能或爱好",
-                        "因工作放弃重要家庭活动/朋友聚会",
-                        "身体已出现异常体检指标（结节/高血压等）",
-                        "经常用咖啡/能量饮料维持工作状态",
-                        "对曾经喜欢的爱好也失去兴趣",
-                        "周末也经常想着工作的事",
-                        "感到被困住，没有其他职业选择",
-                        "上班时频繁看时间希望早点下班",
-                        "感到自己在工作中被忽视或不被赏识",
-                        "害怕向上级提出不同意见",
-                        "工作任务不明确，经常变化",
-                        "工作与个人价值观有严重冲突",
-                        "感到工作正在耗尽你的生命力"
-                    ],
-                    options: ["从不", "偶尔", "经常", "总是"],
-                    progressText: "问题 {current}/{total}",
-                    resultTitle: "您的职场健康度报告",
-                    resultLevels: {
-                        healthy: "健康工作区",
-                        warning: "轻度警示区",
-                        risk: "中度风险区",
-                        crisis: "重度危机区"
-                    },
-                    scoreLevels: [
-                        "0-30: 健康区",
-                        "31-50: 警示区",
-                        "51-70: 风险区",
-                        "71-90: 危机区"
-                    ],
-                    resultMessages: {
-                        healthy: "您的工作环境整体健康，工作压力在正常范围内。您有良好的工作生活平衡，能够享受工作带来的成就感同时保持个人生活。继续保持这种状态，定期关注自己的身心健康。",
-                        warning: "您的工作环境存在一定压力源，已经开始影响您的身心健康。虽然目前情况尚可控制，但需要警惕压力累积效应。建议关注压力来源并采取积极应对措施。",
-                        risk: "您的工作环境已对身心健康造成实质性伤害，出现明显的身心耗竭信号。这种情况需要立即干预，否则可能导致更严重的健康问题。建议制定系统的减压计划并寻求支持。",
-                        crisis: "您的工作环境已严重威胁身心健康，身体已发出明确的求救信号。这种情况急需改变，继续维持现状可能导致不可逆的身心损伤。请优先考虑自身健康，立即采取行动。"
-                    },
-                    recommendTitle: "专业建议",
-                    recommendations: {
-                        healthy: [
-                            "继续保持工作与生活的边界，下班后彻底放松",
-                            "每季度做一次自我健康评估",
-                            "培养至少一个与工作无关的兴趣爱好"
-                        ],
-                        warning: [
-                            "每天设置专门的无工作打扰时段",
-                            "学习压力管理技巧（冥想、呼吸练习）",
-                            "与上级沟通工作负担问题",
-                            "每周保证至少一天完全休息"
-                        ],
-                        risk: [
-                            "立即使用带薪年假或病假休息调整",
-                            "咨询专业心理咨询师或职业顾问",
-                            "与HR沟通可能的岗位调整方案",
-                            "开始探索其他职业机会",
-                            "建立健康监测机制（睡眠、情绪记录）"
-                        ],
-                        crisis: [
-                            "立即就医进行专业身心评估",
-                            "使用医疗休假离开工作环境",
-                            "寻求法律援助了解自身权益",
-                            "制定紧急职业转型计划",
-                            "建立个人支持网络（家人、朋友、专业人士）",
-                            "考虑短期离职恢复身心健康"
-                        ]
-                    },
-                    restartBtnText: "重新测试",
-                    footerText1: "职场健康度测试 | 本测试仅供参考，不能替代专业医疗建议",
-                    footerText2: "遇到严重困扰时，请寻求专业心理咨询师帮助"
-                },
-                en: {
-                    title: "Workplace Wellness Test",
-                    subtitle: "30 questions to scientifically assess your work environment",
-                    intro1: "This test evaluates the impact of your work from four dimensions: physical state, emotional feelings, work meaning, and workplace relationships",
-                    intro2: "The test takes about 5-8 minutes, please answer based on your true feelings in the past month",
-                    intro3: "All data is stored locally on your device and will not be uploaded after the test",
-                    startBtnText: "Start Test",
-                    prevBtnText: "Previous",
-                    nextBtnText: "Next",
-                    questions: [
-                        "Stomachache/headache/palpitations when thinking about work in the morning",
-                        "Shortness of breath or tension during work",
-                        "Exhausted after work, difficulty with daily activities",
-                        "Insomnia due to work stress (difficulty falling asleep/waking up at night)",
-                        "Unable to control temper with colleagues/clients/family",
-                        "Feel work is completely meaningless, like wasting time",
-                        "First reaction to new tasks is aversion or despair",
-                        "Doubt own abilities (even simple tasks seem difficult)",
-                        "Procrastinate until deadline approaches",
-                        "Anxious when hearing work notification sounds",
-                        "Need to carefully interpret leaders'/colleagues' implications",
-                        "Afraid to refute when being denied/devalued",
-                        "Work messages/calls frequently disturb rest time",
-                        "Strong guilt when taking leave",
-                        "Depressing office atmosphere, no one dares to speak truth",
-                        "Salary can't cover emotional treatment costs caused by work",
-                        "Feel suffocated thinking about doing this job for five more years",
-                        "No time/energy to develop any skills or hobbies",
-                        "Miss important family events/friend gatherings due to work",
-                        "Abnormal physical indicators (nodules/high blood pressure, etc.)",
-                        "Rely on coffee/energy drinks to maintain work status",
-                        "Lose interest in once-loved hobbies",
-                        "Think about work even on weekends",
-                        "Feel trapped with no alternative career choices",
-                        "Frequently check time at work hoping to leave early",
-                        "Feel ignored or unappreciated at work",
-                        "Afraid to voice different opinions to superiors",
-                        "Unclear work tasks that change frequently",
-                        "Serious conflict between work and personal values",
-                        "Feel work is draining your life force"
-                    ],
-                    options: ["Never", "Occasionally", "Often", "Always"],
-                    progressText: "Question {current}/{total}",
-                    resultTitle: "Your Workplace Wellness Report",
-                    resultLevels: {
-                        healthy: "Healthy Zone",
-                        warning: "Warning Zone",
-                        risk: "Risk Zone",
-                        crisis: "Crisis Zone"
-                    },
-                    scoreLevels: [
-                        "0-30: Healthy Zone",
-                        "31-50: Warning Zone",
-                        "51-70: Risk Zone",
-                        "71-90: Crisis Zone"
-                    ],
-                    resultMessages: {
-                        healthy: "Your work environment is generally healthy, with work stress within normal range. You maintain a good work-life balance, able to enjoy job satisfaction while preserving personal life. Maintain this state and regularly monitor your physical and mental health.",
-                        warning: "Certain stressors exist in your work environment that are beginning to affect your physical and mental health. While the situation is still manageable, be alert to the cumulative effect of stress. Focus on the sources of stress and take proactive measures.",
-                        risk: "Your work environment has caused substantial harm to your physical and mental health, showing clear signs of burnout. This situation requires immediate intervention to prevent more serious health problems. Develop a systematic stress-reduction plan and seek support.",
-                        crisis: "Your work environment seriously threatens your physical and mental health, with clear distress signals from your body. Immediate change is urgently needed as continuing the current situation may cause irreversible damage. Prioritize your health and take action now."
-                    },
-                    recommendTitle: "Professional Recommendations",
-                    recommendations: {
-                        healthy: [
-                            "Maintain boundaries between work and personal life, relax completely after work",
-                            "Conduct a self-health assessment quarterly",
-                            "Cultivate at least one hobby unrelated to work"
-                        ],
-                        warning: [
-                            "Set specific work-free time slots daily",
-                            "Learn stress management techniques (meditation, breathing exercises)",
-                            "Communicate workload concerns with superiors",
-                            "Ensure at least one full rest day per week"
-                        ],
-                        risk: [
-                            "Use paid annual/sick leave for rest immediately",
-                            "Consult professional psychologist or career advisor",
-                            "Discuss possible position adjustments with HR",
-                            "Begin exploring other career opportunities",
-                            "Establish health monitoring (sleep, mood records)"
-                        ],
-                        crisis: [
-                            "Seek immediate professional physical/mental evaluation",
-                            "Take medical leave to leave work environment",
-                            "Seek legal assistance to understand your rights",
-                            "Develop emergency career transition plan",
-                            "Build personal support network (family, friends, professionals)",
-                            "Consider temporary leave to restore health"
-                        ]
-                    },
-                    restartBtnText: "Retake Test",
-                    footerText1: "Workplace Wellness Test | This test is for reference only and not a substitute for professional medical advice",
-                    footerText2: "Seek help from a professional counselor when facing serious difficulties"
-                }
-            };
-
-            // 当前语言
-            let currentLang = 'zh';
-
-            // DOM元素
-            const langButtons = document.querySelectorAll('.lang-btn');
-            const title = document.getElementById('title');
-            const subtitle = document.getElementById('subtitle');
-            const intro1 = document.getElementById('intro1');
-            const intro2 = document.getElementById('intro2');
-            const intro3 = document.getElementById('intro3');
-            const startBtnText = document.getElementById('startBtnText');
-            const prevBtnText = document.getElementById('prevBtnText');
-            const nextBtnText = document.getElementById('nextBtnText');
-            const progressText = document.getElementById('progressText');
-            const resultTitle = document.getElementById('resultTitle');
-            const resultLevel = document.getElementById('resultLevel');
-            const resultMessage = document.getElementById('resultMessage');
-            const recommendTitle = document.getElementById('recommendTitle');
-            const restartBtnText = document.getElementById('restartBtnText');
-            const footerText1 = document.getElementById('footerText1');
-            const footerText2 = document.getElementById('footerText2');
-
-            // 当前问题和答案数组
-            let currentQuestion = 0;
-            let answers = []; // 初始化为空数组，在initTest中初始化
-
-            // 切换语言
-            function setLanguage(lang) {
-                currentLang = lang;
-                const t = translations[lang];
-
-                // 更新界面文本
-                title.textContent = t.title;
-                subtitle.textContent = t.subtitle;
-                intro1.textContent = t.intro1;
-                intro2.textContent = t.intro2;
-                intro3.textContent = t.intro3;
-                startBtnText.textContent = t.startBtnText;
-                prevBtnText.textContent = t.prevBtnText;
-                nextBtnText.textContent = t.nextBtnText;
-                resultTitle.textContent = t.resultTitle;
-                recommendTitle.textContent = t.recommendTitle;
-                restartBtnText.textContent = t.restartBtnText;
-                footerText1.textContent = t.footerText1;
-                footerText2.textContent = t.footerText2;
-
-                // 更新语言按钮状态
-                langButtons.forEach(btn => {
-                    if (btn.dataset.lang === lang) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                });
-                const scoreLevels = t.scoreLevels;
-                for (let i = 1; i <= 4; i++) {
-                    const el = document.getElementById(`scoreLevel${i}`);
-                    if (el && scoreLevels && scoreLevels[i - 1]) {
-                        el.textContent = scoreLevels[i - 1];
-                    }
-                }
-
-                // 如果测试已经开始，重新生成当前问题
-                if (document.getElementById('testSection').style.display === 'block') {
-                    questionsContainer.innerHTML = '';
-                    generateQuestion(currentQuestion);
-                    updateProgress();
-                }
-
-                // 如果结果已显示，更新结果文本
-                if (document.getElementById('resultSection').style.display === 'block') {
-                    updateResultContent();
-                }
-            }
-
-            // 语言切换事件
-            langButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    setLanguage(btn.dataset.lang);
-                });
+        // 添加按钮点击效果
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 添加点击效果
+                this.classList.add('clicked');
+                
+                // 添加波纹效果
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                
+                // 移除波纹元素
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+                
+                // 动画结束后跳转
+                setTimeout(() => {
+                    window.location.href = this.getAttribute('href');
+                }, 300);
             });
-
-            const introSection = document.getElementById('introSection');
-            const testSection = document.getElementById('testSection');
-            const resultSection = document.getElementById('resultSection');
-            const questionsContainer = document.getElementById('questionsContainer');
-            const progressBar = document.getElementById('progressBar');
-            const progressTextEl = document.getElementById('progressText');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const startBtn = document.getElementById('startBtn');
-            const restartBtn = document.getElementById('restartBtn');
-            const finalScore = document.getElementById('finalScore');
-            const resultLevelEl = document.getElementById('resultLevel');
-            const resultMessageEl = document.getElementById('resultMessage');
-            const recommendations = document.getElementById('recommendations');
-
-            // 初始化测试
-            function initTest() {
-                const t = translations[currentLang];
-                // 初始化答案数组（所有题目初始值为-1，表示未回答）
-                answers = new Array(t.questions.length).fill(-1);
-
-                questionsContainer.innerHTML = '';
-                generateQuestion(currentQuestion);
-                updateProgress();
-            }
-
-            // 生成单个问题
-            function generateQuestion(index) {
-                const t = translations[currentLang];
-                const questions = t.questions;
-                const options = t.options;
-
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'question';
-                questionDiv.innerHTML = `
-                    <h3><span class="question-number">${index + 1}</span>${questions[index]}</h3>
-                    <div class="options">
-                        ${options.map((option, i) => `
-                            <div class="option" data-value="${i}">${option}</div>
-                        `).join('')}
-                    </div>
-                `;
-                questionsContainer.appendChild(questionDiv);
-
-                // 选中之前选择的答案
-                if (answers[index] !== -1) {
-                    const selectedOption = questionDiv.querySelector(`.option[data-value="${answers[index]}"]`);
-                    if (selectedOption) {
-                        selectedOption.classList.add('selected');
-                    }
-                }
-
-                // 添加选项点击事件
-                questionDiv.querySelectorAll('.option').forEach(option => {
-                    option.addEventListener('click', () => {
-                        questionDiv.querySelectorAll('.option').forEach(opt => {
-                            opt.classList.remove('selected');
-                        });
-                        option.classList.add('selected');
-                        answers[index] = parseInt(option.dataset.value);
-
-                        // 如果选好了，启用下一题按钮
-                        if (answers[currentQuestion] !== -1) {
-                            nextBtn.disabled = false;
-                        }
-                    });
-                });
-            }
-
-            // 更新进度
-            function updateProgress() {
-                const t = translations[currentLang];
-                const answeredCount = answers.filter(a => a !== -1).length;
-                const progress = (answeredCount / answers.length) * 100;
-                progressBar.style.width = `${progress}%`;
-
-                progressTextEl.textContent = t.progressText
-                    .replace('{current}', answeredCount)
-                    .replace('{total}', answers.length);
-
-                // 更新按钮状态
-                prevBtn.disabled = currentQuestion === 0;
-                nextBtn.disabled = answers[currentQuestion] === -1;
-            }
-
-            // 上一题
-            prevBtn.addEventListener('click', () => {
-                if (currentQuestion > 0) {
-                    currentQuestion--;
-                    questionsContainer.innerHTML = '';
-                    generateQuestion(currentQuestion);
-                    updateProgress();
-                }
+        });
+        
+        // 添加卡片悬停效果增强
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px)';
             });
-
-            // 下一题
-            nextBtn.addEventListener('click', () => {
-                if (answers[currentQuestion] !== -1) {
-                    if (currentQuestion < answers.length - 1) {
-                        currentQuestion++;
-                        questionsContainer.innerHTML = '';
-                        generateQuestion(currentQuestion);
-                        updateProgress();
-                    } else {
-                        // 所有问题已回答，显示结果
-                        showResults();
-                    }
-                }
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
             });
-
-            // 开始测试
-            startBtn.addEventListener('click', () => {
-                introSection.style.display = 'none';
-                testSection.style.display = 'block';
-                initTest();
-            });
-
-            // 重新测试
-            restartBtn.addEventListener('click', () => {
-                currentQuestion = 0;
-                resultSection.style.display = 'none';
-                testSection.style.display = 'block';
-                initTest();
-            });
-
-            // 更新结果内容
-            function updateResultContent() {
-                const t = translations[currentLang];
-
-                // 计算总分（0-3分/题 * 30题 = 0-90分）
-                const totalScore = answers.reduce((sum, value) => sum + value, 0);
-                finalScore.textContent = totalScore;
-
-                // 根据分数设置结果等级和建议
-                let levelKey, recs;
-
-                if (totalScore <= 30) {
-                    levelKey = "healthy";
-                } else if (totalScore <= 50) {
-                    levelKey = "warning";
-                } else if (totalScore <= 70) {
-                    levelKey = "risk";
-                } else {
-                    levelKey = "crisis";
-                }
-
-                resultLevelEl.textContent = t.resultLevels[levelKey];
-                resultMessageEl.textContent = t.resultMessages[levelKey];
-
-                // 添加建议
-                recommendations.innerHTML = t.recommendations[levelKey].map(rec => `<li>${rec}</li>`).join('');
-
-                // 添加动画效果
-                let score = 0;
-                const scoreInterval = setInterval(() => {
-                    finalScore.textContent = score;
-                    if (score >= totalScore) {
-                        clearInterval(scoreInterval);
-                    }
-                    score += Math.ceil(totalScore / 30);
-                    if (score > totalScore) score = totalScore;
-                }, 50);
-            }
-
-            // 显示结果
-            function showResults() {
-                testSection.style.display = 'none';
-                resultSection.style.display = 'block';
-                updateResultContent();
-            }
         });
     </script>
 </body>
-
 </html>

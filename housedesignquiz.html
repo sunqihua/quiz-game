@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家装风格测试小游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .progress-container {
+            background-color: #f0f4f8;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 12px;
+            background-color: #e0e6ed;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .progress-text {
+            font-weight: bold;
+            color: #4a5568;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .question-container {
+            display: none;
+        }
+        
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .question-number {
+            color: #4299e1;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: #2d3748;
+            line-height: 1.4;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .option {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-color: #cbd5e0;
+        }
+        
+        .option.selected {
+            background-color: #ebf8ff;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        }
+        
+        .option-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+        
+        .option-text {
+            font-size: 1.1rem;
+            color: #4a5568;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(37, 117, 252, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37, 117, 252, 0.4);
+        }
+        
+        .btn:disabled {
+            background: #cbd5e0;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .result-title {
+            font-size: 2.2rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+        
+        .result-style {
+            font-size: 2.8rem;
+            font-weight: bold;
+            margin: 20px 0;
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-image {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            border-radius: 15px;
+            margin: 20px auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .result-description {
+            font-size: 1.2rem;
+            color: #4a5568;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            text-align: left;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
+            box-shadow: 0 4px 10px rgba(255, 154, 158, 0.3);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question-text {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>发现你的理想家装风格</h1>
+            <p class="subtitle">完成15道简单题目，测出最适合你的家装风格，打造梦想之家</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-text">进度: <span id="progress-text">0%</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div id="question-container">
+                <!-- 题目容器 -->
+            </div>
+            
+            <div class="result-container" id="result-container">
+                <h2 class="result-title">你的理想家装风格是</h2>
+                <div class="result-style" id="result-style">现代简约</div>
+                <div class="result-image" id="result-image"></div>
+                <p class="result-description" id="result-description"></p>
+                <button class="btn restart-btn" id="restart-btn">重新测试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 问题和选项数据
+        const questions = [
+            {
+                question: "你理想中的客厅墙面颜色是？",
+                options: [
+                    "纯净白色或浅灰色",
+                    "温暖的米色或淡黄色",
+                    "深色系如墨绿或海军蓝",
+                    "大胆的亮色或几何图案"
+                ]
+            },
+            {
+                question: "你更喜欢哪种地板材质？",
+                options: [
+                    "光滑的抛光水泥",
+                    "温暖的实木地板",
+                    "复古的拼花瓷砖",
+                    "柔软的地毯"
+                ]
+            },
+            {
+                question: "你倾向于选择哪种类型的家具？",
+                options: [
+                    "线条简洁的现代设计",
+                    "舒适柔软的布艺沙发",
+                    "实木材质的中式或复古家具",
+                    "独特造型的设计师作品"
+                ]
+            },
+            {
+                question: "你希望家里的照明氛围是？",
+                options: [
+                    "简洁明亮的无主灯设计",
+                    "温暖柔和的间接照明",
+                    "复古精致的吊灯和壁灯",
+                    "创意独特的艺术灯具"
+                ]
+            },
+            {
+                question: "你如何布置家中的绿植？",
+                options: [
+                    "少量精选的单一品种",
+                    "多种植物营造丛林感",
+                    "传统盆景或梅兰竹菊",
+                    "悬挂式或几何花盆"
+                ]
+            },
+            {
+                question: "你偏爱的窗帘风格是？",
+                options: [
+                    "简约的百叶窗或纯色纱帘",
+                    "温暖的棉麻布帘",
+                    "厚重的绒布或丝绸窗帘",
+                    "几何图案或鲜艳色彩"
+                ]
+            },
+            {
+                question: "你喜欢的装饰画类型是？",
+                options: [
+                    "抽象几何图形",
+                    "自然风景或花卉",
+                    "传统水墨或书法",
+                    "现代艺术或摄影作品"
+                ]
+            },
+            {
+                question: "你理想的厨房风格是？",
+                options: [
+                    "全白极简无把手设计",
+                    "原木色温馨小厨房",
+                    "深色实木传统风格",
+                    "彩色橱柜与金属元素"
+                ]
+            },
+            {
+                question: "你偏好的纺织品材质？",
+                options: [
+                    "亚麻或纯棉",
+                    "柔软的绒布或羊毛",
+                    "丝绸或锦缎",
+                    "混搭各种材质和图案"
+                ]
+            },
+            {
+                question: "你如何看待储物空间？",
+                options: [
+                    "隐藏式收纳，保持表面整洁",
+                    "开放式展示架，展示收藏品",
+                    "传统实木柜子，分类明确",
+                    "创意收纳，既是收纳也是装饰"
+                ]
+            },
+            {
+                question: "你喜欢的家具配色方案？",
+                options: [
+                    "黑白灰中性色调",
+                    "大地色系搭配",
+                    "深木色配金色点缀",
+                    "大胆的撞色设计"
+                ]
+            },
+            {
+                question: "你更关注家装的哪个方面？",
+                options: [
+                    "功能性和空间利用",
+                    "舒适度和温馨感",
+                    "传统工艺和材质",
+                    "个性表达和艺术性"
+                ]
+            },
+            {
+                question: "你偏爱的空间布局？",
+                options: [
+                    "开放式通透设计",
+                    "功能分区明确",
+                    "对称平衡布局",
+                    "打破常规的创意布局"
+                ]
+            },
+            {
+                question: "你选择的装饰品类型？",
+                options: [
+                    "极简的几何雕塑",
+                    "编织物和陶瓷器皿",
+                    "古董或传统工艺品",
+                    "现代艺术装置"
+                ]
+            },
+            {
+                question: "你理想中的卧室氛围？",
+                options: [
+                    "静谧简约的禅意空间",
+                    "温暖舒适的避风港",
+                    "精致典雅的传统风格",
+                    "个性十足的主题房间"
+                ]
+            }
+        ];
+
+        // 家装风格结果
+        const styles = {
+            "现代简约": {
+                description: "你喜欢简洁、功能性和开放空间。现代简约风格以干净的线条、中性色调和开放式布局为特点，强调'少即是多'的理念。这种风格注重空间感、自然光线和材质的原始美感，避免过度装饰，营造宁静而有序的生活环境。",
+                image: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+            },
+            "北欧风": {
+                description: "你追求温馨、舒适和自然元素。北欧风格以温暖的木质、柔和的色彩和天然材质为特色，注重功能性和舒适感。这种风格擅长利用自然光线，搭配植物和纺织品，营造出温暖、舒适且充满生活气息的空间，特别适合喜欢温馨居家氛围的人。",
+                image: "https://images.unsplash.com/photo-1505842381624-c6b0579625a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+            },
+            "新中式": {
+                description: "你欣赏传统工艺、文化底蕴和精致细节。新中式风格将传统中式元素与现代设计理念结合，运用实木家具、对称布局和精致工艺品，营造出既有文化底蕴又不失现代舒适的空间。这种风格注重材质质感和工艺细节，适合追求品质和文化内涵的人。",
+                image: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+            },
+            "工业风": {
+                description: "你喜欢个性、创意和独特表达。工业风格以裸露的材料、金属元素和粗犷质感为特色，常常融入复古家具和艺术装饰。这种风格不拘一格，大胆运用色彩、材质和造型，创造出充满个性和艺术气息的空间，特别适合追求独特生活品味的人。",
+                image: "https://images.unsplash.com/photo-1486304873000-235643847519?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+            },
+            "轻奢风": {
+                description: "你追求精致、品质和低调奢华。轻奢风格融合了现代简约的线条与精致的材质细节，常用金属、大理石等材质提升质感，色彩上常以中性色为主，点缀低饱和度的色彩。这种风格注重细节和品质，营造出优雅、舒适且富有格调的生活空间。",
+                image: "https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
+            }
+        };
+
+        // 初始化变量
+        let currentQuestion = 0;
+        let answers = [];
+        const totalQuestions = questions.length;
+
+        // DOM元素
+        const questionContainer = document.getElementById('question-container');
+        const progressText = document.getElementById('progress-text');
+        const progressFill = document.getElementById('progress-fill');
+        const resultContainer = document.getElementById('result-container');
+        const resultStyle = document.getElementById('result-style');
+        const resultImage = document.getElementById('result-image');
+        const resultDescription = document.getElementById('result-description');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // 初始化测试
+        function initTest() {
+            currentQuestion = 0;
+            answers = [];
+            renderQuestion();
+            updateProgress();
+            resultContainer.style.display = 'none';
+            questionContainer.style.display = 'block';
+        }
+
+        // 渲染当前问题
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            let optionsHTML = '';
+            
+            q.options.forEach((option, index) => {
+                optionsHTML += `
+                    <div class="option" data-index="${index}">
+                        <div class="option-icon">${index + 1}</div>
+                        <div class="option-text">${option}</div>
+                    </div>
+                `;
+            });
+            
+            const questionHTML = `
+                <div class="question-container active">
+                    <div class="question-number">问题 ${currentQuestion + 1}/${totalQuestions}</div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options-container">${optionsHTML}</div>
+                    <div class="btn-container">
+                        ${currentQuestion > 0 ? '<button class="btn" id="prev-btn">上一题</button>' : '<div></div>'}
+                        <button class="btn" id="next-btn" disabled>${currentQuestion === totalQuestions - 1 ? '查看结果' : '下一题'}</button>
+                    </div>
+                </div>
+            `;
+            
+            questionContainer.innerHTML = questionHTML;
+            
+            // 添加事件监听器
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', selectOption);
+            });
+            
+            if (currentQuestion > 0) {
+                document.getElementById('prev-btn').addEventListener('click', prevQuestion);
+            }
+            
+            document.getElementById('next-btn').addEventListener('click', nextQuestion);
+        }
+
+        // 选择选项
+        function selectOption(e) {
+            const selectedOption = e.currentTarget;
+            
+            // 移除同组的其他选中状态
+            selectedOption.parentElement.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // 添加选中状态
+            selectedOption.classList.add('selected');
+            
+            // 启用下一题按钮
+            document.getElementById('next-btn').disabled = false;
+            
+            // 保存答案
+            answers[currentQuestion] = parseInt(selectedOption.dataset.index);
+        }
+
+        // 上一题
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+                updateProgress();
+            }
+        }
+
+        // 下一题
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions - 1) {
+                currentQuestion++;
+                renderQuestion();
+                updateProgress();
+            } else {
+                showResult();
+            }
+        }
+
+        // 更新进度条
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `${Math.round(progress)}%`;
+        }
+
+        // 显示结果
+        function showResult() {
+            // 计算风格得分
+            const scores = {
+                "现代简约": 0,
+                "北欧风": 0,
+                "新中式": 0,
+                "工业风": 0,
+                "轻奢风": 0
+            };
+            
+            // 每个选项对应不同风格的权重
+            answers.forEach((answer, index) => {
+                switch(answer) {
+                    case 0:
+                        scores["现代简约"] += 2;
+                        scores["轻奢风"] += 1;
+                        break;
+                    case 1:
+                        scores["北欧风"] += 2;
+                        scores["轻奢风"] += 1;
+                        break;
+                    case 2:
+                        scores["新中式"] += 2;
+                        scores["轻奢风"] += 1;
+                        break;
+                    case 3:
+                        scores["工业风"] += 2;
+                        scores["轻奢风"] += 1;
+                        break;
+                }
+            });
+            
+            // 找出得分最高的风格
+            let maxScore = 0;
+            let resultStyleName = "现代简约";
+            
+            for (const [style, score] of Object.entries(scores)) {
+                if (score > maxScore) {
+                    maxScore = score;
+                    resultStyleName = style;
+                }
+            }
+            
+            // 显示结果
+            resultStyle.textContent = resultStyleName;
+            resultImage.style.backgroundImage = `url('${styles[resultStyleName].image}')`;
+            resultDescription.textContent = styles[resultStyleName].description;
+            
+            // 切换到结果页面
+            questionContainer.style.display = 'none';
+            resultContainer.style.display = 'block';
+        }
+
+        // 重新开始测试
+        restartBtn.addEventListener('click', initTest);
+
+        // 初始化测试
+        window.onload = initTest;
+    </script>
+</body>
+</html>
